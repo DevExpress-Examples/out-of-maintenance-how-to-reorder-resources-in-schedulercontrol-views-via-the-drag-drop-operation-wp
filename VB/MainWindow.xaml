@@ -1,0 +1,67 @@
+﻿<Window x:Class="SchedulerBindToObservableCollectionWpf.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:dxsch="http://schemas.devexpress.com/winfx/2008/xaml/scheduler"
+        xmlns:local="clr-namespace:SchedulerBindToObservableCollectionWpf"
+        Title="MainWindow" Height="600" Width="800" xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors">
+
+    <Window.DataContext>
+        <local:SchedulerViewModel/>
+    </Window.DataContext>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.75*"/>
+            <ColumnDefinition Width="0.25*"/>
+        </Grid.ColumnDefinitions>
+
+        <dxsch:SchedulerControl Name="schedulerControl1" GroupType="Date">
+            <dxsch:SchedulerControl.Storage>
+                <dxsch:SchedulerStorage>
+                    <dxsch:SchedulerStorage.AppointmentStorage>
+                        <dxsch:AppointmentStorage DataSource="{Binding Appointments}">
+                            <dxsch:AppointmentStorage.Mappings>
+                                <dxsch:AppointmentMapping
+                                    Start="StartTime"
+                                    End="EndTime"
+                                    Subject="Subject"
+                                    Description="Description"
+                                    Location="Location"
+                                    AllDay="AllDay"
+                                    Label="Label"
+                                    Status="Status"
+                                    Type="EventType"
+                                    RecurrenceInfo="RecurrenceInfo"
+                                    ReminderInfo="ReminderInfo"
+                                    ResourceId="ResourceId"/>
+                            </dxsch:AppointmentStorage.Mappings>
+                            <dxsch:AppointmentStorage.CustomFieldMappings>
+                                <dxsch:SchedulerCustomFieldMapping Member="Price" Name="cfPrice" ValueType="Decimal"/>
+                            </dxsch:AppointmentStorage.CustomFieldMappings>
+                        </dxsch:AppointmentStorage>
+                    </dxsch:SchedulerStorage.AppointmentStorage>
+                    <dxsch:SchedulerStorage.ResourceStorage>
+                        <dxsch:ResourceStorage DataSource="{Binding Resources}">
+                            <dxsch:ResourceStorage.Mappings>
+                                <dxsch:ResourceMapping
+                                    Id="Id"
+                                    Caption="Name"
+                                    Color="Color"/>
+                            </dxsch:ResourceStorage.Mappings>
+                            <dxsch:ResourceStorage.CustomFieldMappings>
+                                <dxsch:SchedulerCustomFieldMapping Member="ResSortOrder" Name="SortOrder" ValueType="String"/>
+                            </dxsch:ResourceStorage.CustomFieldMappings>
+                        </dxsch:ResourceStorage>
+                    </dxsch:SchedulerStorage.ResourceStorage>
+                </dxsch:SchedulerStorage>
+            </dxsch:SchedulerControl.Storage>
+        </dxsch:SchedulerControl>
+        
+        <dxe:DateNavigator Grid.Column="1" Name="dateNavigator1">
+            <dxe:DateNavigator.StyleSettings>
+                <dxsch:SchedulerDateNavigatorStyleSettings SchedulerControl="{Binding ElementName=schedulerControl1}">
+                </dxsch:SchedulerDateNavigatorStyleSettings>
+            </dxe:DateNavigator.StyleSettings>
+        </dxe:DateNavigator>
+    </Grid>
+</Window>
