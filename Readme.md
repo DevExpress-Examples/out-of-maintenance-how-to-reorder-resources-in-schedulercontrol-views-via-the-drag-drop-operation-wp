@@ -1,3 +1,10 @@
+<!-- default file list -->
+*Files to look at*:
+
+* [DragDropResourcesHelper.cs](./CS/DragDropResourcesHelper.cs) (VB: [DragDropResourcesHelper.vb](./VB/DragDropResourcesHelper.vb))
+* [MainWindow.xaml](./CS/MainWindow.xaml) (VB: [MainWindow.xaml](./VB/MainWindow.xaml))
+* [MainWindow.xaml.cs](./CS/MainWindow.xaml.cs) (VB: [MainWindow.xaml](./VB/MainWindow.xaml))
+<!-- default file list end -->
 # How to reorder resources in SchedulerControl views via the "drag-drop" operation (WPF version)
 
 
