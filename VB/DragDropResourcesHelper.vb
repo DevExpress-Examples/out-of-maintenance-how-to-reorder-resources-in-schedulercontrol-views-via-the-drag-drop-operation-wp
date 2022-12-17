@@ -1,26 +1,26 @@
-﻿Imports System
+Imports System
 Imports System.Collections
 Imports System.Collections.Generic
 Imports System.Drawing
-Imports System.Linq
-Imports System.Text
 Imports DevExpress.Xpf.Scheduler
 Imports DevExpress.XtraScheduler
 Imports DevExpress.XtraScheduler.Native
 
 Namespace SchedulerBindToObservableCollectionWpf
+
     Public Class DragDropResourcesHelper
+
         Private CurrentScheduler As SchedulerControl
+
         Private CustomFieldName As String
 
         Private downHitInfo As ISchedulerHitInfo
-        Private downHitPoint As Point
 
+        Private downHitPoint As Point
 
         Public Sub New(ByVal scheduler As SchedulerControl, ByVal fieldName As String)
             CurrentScheduler = scheduler
             CustomFieldName = fieldName
-
             AddHandler CurrentScheduler.Storage.ResourceCollectionLoaded, AddressOf Storage_ResourceCollectionLoaded
             CurrentScheduler.Storage.RefreshData()
             AddHandler CurrentScheduler.PreviewMouseDown, AddressOf CurrentScheduler_PreviewMouseDown
@@ -29,9 +29,7 @@ Namespace SchedulerBindToObservableCollectionWpf
         End Sub
 
         Private Sub CurrentScheduler_Drop(ByVal sender As Object, ByVal e As System.Windows.DragEventArgs)
-            If downHitInfo Is Nothing Then
-                Return
-            End If
+            If downHitInfo Is Nothing Then Return
             Dim dropHitInfo As ISchedulerHitInfo = SchedulerHitInfo.CreateSchedulerHitInfo(CurrentScheduler, e.GetPosition(CurrentScheduler))
             If dropHitInfo.HitTest = DevExpress.XtraScheduler.Drawing.SchedulerHitTest.ResourceHeader Then
                 Dim targetResource As Resource = dropHitInfo.ViewInfo.Resource
@@ -48,9 +46,9 @@ Namespace SchedulerBindToObservableCollectionWpf
         Private Sub CurrentScheduler_PreviewMouseMove(ByVal sender As Object, ByVal e As System.Windows.Input.MouseEventArgs)
             If e.LeftButton = System.Windows.Input.MouseButtonState.Pressed AndAlso downHitInfo IsNot Nothing Then
                 Dim dragSize As Size = System.Windows.Forms.SystemInformation.DragSize
-                Dim dragRect As New Rectangle(New Point(downHitPoint.X - dragSize.Width \ 2, downHitPoint.Y - dragSize.Height \ 2), dragSize)
+                Dim dragRect As Rectangle = New Rectangle(New Point(downHitPoint.X - dragSize.Width \ 2, downHitPoint.Y - dragSize.Height \ 2), dragSize)
                 Dim eventPoint As System.Windows.Point = e.GetPosition(CurrentScheduler)
-                If Not dragRect.Contains(New Point(CInt((eventPoint.X)), CInt((eventPoint.Y)))) Then
+                If Not dragRect.Contains(New Point(CInt(eventPoint.X), CInt(eventPoint.Y))) Then
                     System.Windows.DragDrop.DoDragDrop(CurrentScheduler, downHitInfo.ViewInfo.Resource, System.Windows.DragDropEffects.Move)
                     downHitInfo = Nothing
                     downHitPoint = Point.Empty
@@ -65,8 +63,7 @@ Namespace SchedulerBindToObservableCollectionWpf
             Dim hitInfo As ISchedulerHitInfo = SchedulerHitInfo.CreateSchedulerHitInfo(CurrentScheduler, eventPoint)
             If hitInfo.HitTest = DevExpress.XtraScheduler.Drawing.SchedulerHitTest.ResourceHeader Then
                 downHitInfo = hitInfo
-
-                downHitPoint = New Point(CInt((eventPoint.X)), CInt((eventPoint.Y)))
+                downHitPoint = New Point(CInt(eventPoint.X), CInt(eventPoint.Y))
                 e.Handled = True
             End If
         End Sub
@@ -85,26 +82,21 @@ Namespace SchedulerBindToObservableCollectionWpf
     Public MustInherit Class ResourceBaseComparer
         Implements IComparer(Of Resource), IComparer
 
-        #Region "IComparer Members"
+'#Region "IComparer Members"
         Private Function IComparer_Compare(ByVal x As Object, ByVal y As Object) As Integer Implements IComparer.Compare
             Return CompareCore(x, y)
         End Function
+
         Public Function Compare(ByVal x As Resource, ByVal y As Resource) As Integer Implements IComparer(Of Resource).Compare
             Return CompareCore(x, y)
         End Function
-        #End Region
 
+'#End Region
         Protected Overridable Function CompareCore(ByVal x As Object, ByVal y As Object) As Integer
-            Dim xRes As Resource = DirectCast(x, Resource)
-            Dim yRes As Resource = DirectCast(y, Resource)
-
-            If xRes Is Nothing OrElse yRes Is Nothing Then
-                Return 0
-            End If
-            If ResourceEmpty.Resource.Equals(xRes) OrElse ResourceEmpty.Resource.Equals(yRes) Then
-                Return 0
-            End If
-
+            Dim xRes As Resource = CType(x, Resource)
+            Dim yRes As Resource = CType(y, Resource)
+            If xRes Is Nothing OrElse yRes Is Nothing Then Return 0
+            If ResourceEmpty.Resource.Equals(xRes) OrElse ResourceEmpty.Resource.Equals(yRes) Then Return 0
             Return CompareResources(xRes, yRes)
         End Function
 
@@ -115,6 +107,7 @@ Namespace SchedulerBindToObservableCollectionWpf
         Inherits ResourceBaseComparer
 
         Private customFieldValue As String = ""
+
         Public Sub New(ByVal parCustomField As String)
             customFieldValue = parCustomField
         End Sub
